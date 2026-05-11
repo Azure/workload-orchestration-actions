@@ -1,0 +1,46 @@
+﻿name: 'WO: Deploy'
+description: 'Deploy a Solution Template to Workload Orchestration Target'
+inputs:
+  solution-template-version-id:
+    description: 'Solution Template Version'
+    required: true
+  target-id:
+    description: 'Target'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Deploy
+      shell: bash
+      run: |
+        # Setup CLI Extension
+        az extension add -n workload-orchestration
+
+        solution_template_version_id="${{ inputs.solution-template-version-id }}"
+        target_id="${{ inputs.target-id }}"
+
+        solution_regex='^/subscriptions/(.+)/resourceGroups/(.+)/providers/Microsoft.Edge/solutionTemplates/([^/]+)/versions/([^/]+)'
+        if [[ ! "$solution_template_version_id" =~ $solution_regex ]]; then
+          echo "::error::No Valid Solution Template Found"
+          exit 0
+        fi
+        solution="${BASH_REMATCH[3]}"
+        version="${BASH_REMATCH[4]}"
+
+        target_regex='^/subscriptions/(.+)/resourceGroups/(.+)/providers/Microsoft.Edge/targets/([^/]+)$'
+        if [[ ! "$target_id" =~ $target_regex ]]; then
+          echo "::error::No Valid Target Found"
+          exit 0
+        fi
+        resource_group="${BASH_REMATCH[2]}"
+        target="${BASH_REMATCH[3]}"
+
+        echo "Publishing $solution/$version to $target"
+        review=$(az workload-orchestration target review --resource-group "$resource_group" --target-name "$target" --solution-template-version-id "$solution_template_version_id")
+        review_id=$(echo "$review" | jq -r '.id')
+        publish=$(az workload-orchestration target publish --resource-group "$resource_group" --target-name "$target" --solution-version-id "$review_id")
+        echo "Published $solution/$version to $target"
+
+        echo "Deploying $solution/$version to $target"
+        install=$(az workload-orchestration target install --resource-group "$resource_group" --target-name "$target" --solution-version-id "$review_id")
+        echo "Deployed $solution/$version to $target"
