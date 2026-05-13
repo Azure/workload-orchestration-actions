@@ -24,7 +24,7 @@ This action reviews, publishes, and installs a solution template version on the 
 ## Usage
 
 ```yaml
-- uses: theshubhamp/workload-orchestration-actions/deploy@main
+- uses: Azure/workload-orchestration-actions/deploy@main
   with:
     solution-template-version-id: /subscriptions/.../solutionTemplates/mySolution/versions/1.0.0
     target-id: /subscriptions/.../targets/myTarget

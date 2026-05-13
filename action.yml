@@ -1,0 +1,20 @@
+name: 'Workload Orchestration'
+description: 'GitHub Actions for managing Workload Orchestration resources. See README for available actions.'
+author: 'theshubhamp'
+
+branding:
+  icon: 'layers'
+  color: 'blue'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: 'Stub'
+      run: |
+        echo "This is a stub. Don't use this action directly."
+        echo "Available actions:"
+        echo "  - Azure/workload-orchestration-actions/deploy — Deploy a Solution Template to a Target"
+        echo ""
+        echo "See https://github.com/Azure/workload-orchestration-actions#readme for usage."
+        exit 1
+      shell: bash
