@@ -2,10 +2,6 @@ name: 'Workload Orchestration'
 description: 'GitHub Actions for managing Workload Orchestration resources. See README for available actions.'
 author: 'theshubhamp'
 
-branding:
-  icon: 'layers'
-  color: 'blue'
-
 runs:
   using: 'composite'
   steps:
