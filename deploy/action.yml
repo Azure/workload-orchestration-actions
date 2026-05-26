@@ -13,6 +13,8 @@ runs:
     - name: Deploy
       shell: bash
       run: |
+        set -euo pipefail
+
         # Setup CLI Extension
         az extension add -n workload-orchestration
 
@@ -22,7 +24,7 @@ runs:
         solution_regex='^/subscriptions/(.+)/resourceGroups/(.+)/providers/Microsoft.Edge/solutionTemplates/([^/]+)/versions/([^/]+)'
         if [[ ! "$solution_template_version_id" =~ $solution_regex ]]; then
           echo "::error::No Valid Solution Template Found"
-          exit 0
+          exit 1
         fi
         solution="${BASH_REMATCH[3]}"
         version="${BASH_REMATCH[4]}"
@@ -30,7 +32,7 @@ runs:
         target_regex='^/subscriptions/(.+)/resourceGroups/(.+)/providers/Microsoft.Edge/targets/([^/]+)$'
         if [[ ! "$target_id" =~ $target_regex ]]; then
           echo "::error::No Valid Target Found"
-          exit 0
+          exit 1
         fi
         resource_group="${BASH_REMATCH[2]}"
         target="${BASH_REMATCH[3]}"
