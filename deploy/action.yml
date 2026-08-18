@@ -12,14 +12,17 @@ runs:
   steps:
     - name: Deploy
       shell: bash
+      env:
+        SOLUTION_TEMPLATE_VERSION_ID: ${{ inputs.solution-template-version-id }}
+        TARGET_ID: ${{ inputs.target-id }}
       run: |
         set -euo pipefail
 
         # Setup CLI Extension
         az extension add -n workload-orchestration
 
-        solution_template_version_id="${{ inputs.solution-template-version-id }}"
-        target_id="${{ inputs.target-id }}"
+        solution_template_version_id="$SOLUTION_TEMPLATE_VERSION_ID"
+        target_id="$TARGET_ID"
 
         solution_regex='^/subscriptions/(.+)/resourceGroups/(.+)/providers/Microsoft.Edge/solutionTemplates/([^/]+)/versions/([^/]+)'
         if [[ ! "$solution_template_version_id" =~ $solution_regex ]]; then
